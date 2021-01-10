@@ -62,7 +62,7 @@ def run( tfl_manager, pls_data ):
         print( colored( "Prev Frame: ( " + prev_frame[0] + ", " + str( prev_frame[1] ) + " )", 'red' ) )
         print( colored( "Current Frame: ( " + curr_frame[0] + ", " + str( curr_frame[1] ) + " )", 'green' ) )
         EM = pls_data["EMs"][i][1]
-        tfl_manager.run( EM, prev_frame, curr_frame )
+        tfl_manager.run( EM, prev_frame )
     
 
 

@@ -15,6 +15,7 @@ class TFLManager:
         self.FL = FL
         self.pls_file_name = pls_file_name
         self.frames = { }
+        self.prev = None
 
 
     def make_prediction( self, frame_path, frame_id ):
@@ -24,7 +25,6 @@ class TFLManager:
         # integration with part 02 ( Attention )
         attention.crop_for_part04( str( frame_id ), src_image, points_from_detect )
         prediction = get_prediction(frame_id)
-
         tfls = []
         for i, pred in enumerate( prediction ):
             if pred == 1:
@@ -36,25 +36,25 @@ class TFLManager:
         
 
     
-    def make_predictions(self, frame_path, frame_id ):
-        if frame_id not in self.frames.keys():
-            self.make_prediction( frame_path, frame_id )
+    # def make_predictions(self, frame_path, frame_id ):
+    #     if frame_id not in self.frames.keys():
+    #         self.make_prediction( frame_path, frame_id )
 
 
     # prev_frame => ( prev_path, prev_id )
     # curr_frame => ( curr_path, curr_id ) ]
-    def run(self, EM, prev_frame, curr_frame ):
+    # def run(self, EM, prev_frame, curr_frame ):
+    def run(self, EM, curr_frame ):
         # integration with part 01 and part 02( Dettection and Attention)
-        self.make_predictions( prev_frame[0], prev_frame[1] )
-        self.make_predictions( curr_frame[0], curr_frame[1] )
-        # integration with part 03 ( ? )
-        prev_fcont = self.frames[ prev_frame[1] ]
+        self.make_prediction( curr_frame[0], curr_frame[1] )
+        if self.prev is None:
+            self.prev = curr_frame
+            return
+        prev_fcont = self.frames[ self.prev[1] ]
         curr_fcont = self.frames[ curr_frame[1] ]
         curr_fcont.EM = EM
         sfm.calc_TFL_dist( prev_fcont, curr_fcont, self.FL, self.PP )
-        visualize(prev_frame[1], curr_frame[1], prev_fcont, curr_fcont, self.FL, self.PP )
-        print(  )
-
-
+        visualize( self.prev[1], curr_frame[1], prev_fcont, curr_fcont, self.FL, self.PP )
+        self.prev = curr_frame
 
         
